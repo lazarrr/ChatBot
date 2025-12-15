@@ -3,7 +3,7 @@
 Gateway application for an AI chatbot system.
 
 ## Architecture
-- Angular (Frontend)
+- Flutter (Frontend)
 - ASP.NET Core Web API (Gateway)
 - Flask (Microservice for OpenAI communication)
 
@@ -17,7 +17,7 @@ Gateway application for an AI chatbot system.
 
 ## Tech Stack
 - .NET 8
-- Angular
+- Flutter
 - Python (Flask)
 - OpenAI API
 
