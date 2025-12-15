@@ -17,12 +17,7 @@ obj/
 appsettings.Development.json
 appsettings.Production.json
 
-# =====================
-# Node / Angular
-# =====================
-node_modules/
-dist/
-.angular/
+
 
 # =====================
 # Python / Flask
@@ -32,6 +27,8 @@ __pycache__/
 .env
 venv/
 .venv/
+# virtual environment
+flask-api
 
 # =====================
 # OS

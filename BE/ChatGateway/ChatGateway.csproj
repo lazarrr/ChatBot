@@ -14,4 +14,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ChatGateway.Application\ChatGateway.Application.csproj" />
+    <ProjectReference Include="..\ChatGateway.Contracts\ChatGateway.Contracts.csproj" />
+    <ProjectReference Include="..\ChatGateway.Domain\ChatGateway.Domain.csproj" />
+    <ProjectReference Include="..\ChatGateway.Infrastructure\ChatGateway.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

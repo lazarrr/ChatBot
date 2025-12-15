@@ -1,7 +1,17 @@
+using ChatGateway.Domain;
+using ChatGateway.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
+
+builder.Services.Configure<FlaskSettings>(builder.Configuration.GetSection("FlaskSettings"));
+
+builder.Services.AddHttpClient<IFlaskChatClient, FlaskChatClient>(client =>
+{
+    client.BaseAddress = new Uri("http://127.0.0.1:5000/");
+});
 
 var app = builder.Build();
 
@@ -17,3 +27,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
