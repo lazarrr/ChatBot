@@ -13,6 +13,16 @@ builder.Services.AddHttpClient<IFlaskChatClient, FlaskChatClient>(client =>
     client.BaseAddress = new Uri("http://127.0.0.1:5000/");
 });
 
+builder.Services
+    .AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.Converters.Add(
+            new Newtonsoft.Json.Converters.StringEnumConverter()
+        );
+    });
+
+
 var app = builder.Build();
 
 app.UseSwagger();

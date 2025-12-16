@@ -3,6 +3,9 @@ using ChatGateway.Domain;
 using ChatGateway.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Threading.Tasks;
 
 namespace ChatGateway.Controllers;
 
@@ -30,8 +33,33 @@ public class ChatController : Controller
     [ProducesResponseType(500)]
     public async Task<IActionResult> Chat([FromBody] ChatRequestDto chatRequest)
     {
-        var response = await _flaskChatClient.SendAsync(chatRequest.Message);
+        var response = await _flaskChatClient.SendAsync(chatRequest.Message, chatRequest.SystemPrompt);
 
         return Ok(response);
     }
+
+    [HttpPost("change_model")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(object), 200)]
+    [ProducesResponseType(typeof(string), 400)]
+    [ProducesResponseType(500)]
+    public async Task<IActionResult> ChangeModel(ChangeModelRequestEnumDto changeModelRequest)
+    {
+        var enumMember = changeModelRequest
+                    .GetType()
+                    .GetField(changeModelRequest.ToString())?
+                    .GetCustomAttribute<EnumMemberAttribute>();
+
+        var modelName = enumMember?.Value ?? changeModelRequest.ToString();
+
+        if(modelName == null)
+        {
+            return BadRequest("Invalid model name.");
+        }
+
+        var response = await _flaskChatClient.ChangeModel(modelName);
+        return Ok(response);
+    }
+
+
 }

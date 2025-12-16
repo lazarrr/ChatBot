@@ -14,11 +14,20 @@ public class FlaskChatClient : IFlaskChatClient
         _httpClient = httpClient;
     }
 
-    public async Task<ChatResponseDto> SendAsync(string message)
+    public async Task<string> ChangeModel(string model)
+    {
+        var response = await _httpClient.PostAsJsonAsync("change_model", new ChangeModelRequestDto { ModelName = model });
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    public async Task<ChatResponseDto> SendAsync(string message, string systemPrompt)
     {
         var response = await _httpClient.PostAsJsonAsync(
             "chat",
-            new ChatRequestDto { Message = message }
+            new ChatRequestDto { Message = message, SystemPrompt = systemPrompt}
         );
 
         response.EnsureSuccessStatusCode();
