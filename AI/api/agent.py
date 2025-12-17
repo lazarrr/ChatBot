@@ -56,14 +56,13 @@ class GPTAgent:
         messages.extend(self.conversation_history)
         
         try:
-            response = self.client.chat.completions.create(
+            response = self.client.responses.create(
                 model=self.model,
-                messages=messages,
-                temperature=0.7,
-                max_tokens=2000
+                input=messages,
+                reasoning={"effort": "minimal"}
             )
             
-            assistant_message = response.choices[0].message.content
+            assistant_message =  response.output[1].content[0].text
             
             # Add assistant response to history
             self.conversation_history.append({
@@ -100,15 +99,15 @@ class GPTAgent:
         })
         
         try:
-            response = self.client.chat.completions.create(
+            response = self.client.responses.create(
                 model=self.model,
-                messages=messages,
-                temperature=0.7,
-                max_tokens=2000
+                input=messages,
+                reasoning={"effort": "minimal"}
             )
             
-            return response.choices[0].message.content
+            return response.output[1].content[0].text
         except Exception as e:
+            print(f"Error in chat_single: {str(e)}")
             raise Exception(f"Error communicating with OpenAI: {str(e)}")
     
     def clear_history(self):

@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # Initialize the GPT-4 agent
 try:
-    agent = GPTAgent(api_key=os.getenv("OPENAI_API_KEY"), model="gpt-4")
+    agent = GPTAgent(api_key=os.getenv("OPENAI_API_KEY"), model="gpt-5-nano")
 except ValueError as e:
     print(f"Warning: {e}")
     agent = None
@@ -49,6 +49,7 @@ def chat():
         reply = agent.chat_single(message, system_prompt)
         return jsonify(reply=reply)
     except Exception as e:
+        print(f"Error in /chat endpoint: {str(e)}")
         return jsonify(error=str(e)), 500
 
 @app.route("/chat/conversation", methods=["POST"])
