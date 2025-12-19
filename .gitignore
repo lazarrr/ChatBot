@@ -29,7 +29,7 @@ venv/
 .venv/
 # virtual environment
 flask-api
-
+data
 # =====================
 # OS
 # =====================
