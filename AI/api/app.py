@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify
 from agent import GPTAgent
 import os
+from semantic_search import SemanticSearch
 
 app = Flask(__name__)
 
-# Initialize the GPT-4 agent
+# Initialize the GPT-5-nano agent
 try:
     agent = GPTAgent(api_key=os.getenv("OPENAI_API_KEY"), model="gpt-5-nano")
 except ValueError as e:
@@ -77,6 +78,28 @@ def clear_conversation():
     
     agent.clear_history()
     return jsonify(status="Conversation history cleared")
+
+@app.route("/upload", methods=["POST"])
+def upload_file():
+    if not agent:
+        return jsonify(error="Agent not initialized"), 500
+
+    data = request.get_json()
+    file_path = data.get("filePath")
+
+    if not file_path:
+        return jsonify(error="File path is required"), 400
+
+    try:
+        # Simulate file upload logic here
+        print(f"Uploading file from path: {file_path}")
+        ss = SemanticSearch()
+        ss.get_embeddings()
+
+
+        return jsonify(status="File uploaded successfully")
+    except Exception as e:
+        return jsonify(error=str(e)), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8081, debug=True)

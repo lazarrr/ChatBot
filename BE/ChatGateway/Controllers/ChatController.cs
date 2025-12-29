@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Reflection;
 using System.Runtime.Serialization;
-using System.Threading.Tasks;
 
 namespace ChatGateway.Controllers;
 
@@ -60,6 +59,4 @@ public class ChatController : Controller
         var response = await _flaskChatClient.ChangeModel(modelName);
         return Ok(response);
     }
-
-
 }

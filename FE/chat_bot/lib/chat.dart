@@ -180,7 +180,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       final fileExtension = picked.files.first.extension;
 
                       if (fileExtension != null &&
-                          ['docx', 'pdf', 'txt']
+                          ['.docx', '.pdf', '.txt']
                               .contains(fileExtension.toLowerCase())) {
                         // prevent uploading dangerous file types
                         setState(() {
@@ -194,10 +194,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       }
                       // call endpoint to upload file
                       final api = ApiClient();
-                      var response = await api.post('/api/Chat/upload', body: {
-                        'fileName': fname,
-                        'fileSize': fsize.toString(),
-                      });
+                      var response = await api.post('/api/FileUpload/upload',
+                          body: {'filePath': filePath});
 
                       setState(() {
                         _messages.add(Message(
