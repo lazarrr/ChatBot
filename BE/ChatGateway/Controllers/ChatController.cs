@@ -37,6 +37,18 @@ public class ChatController : Controller
         return Ok(response);
     }
 
+    [HttpPost("chat/conversation")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(object), 200)]
+    [ProducesResponseType(typeof(string), 400)]
+    [ProducesResponseType(500)]
+    public async Task<IActionResult> Conversation([FromBody] ChatRequestDto chatRequest)
+    {
+        var response = await _flaskChatClient.SendToConversationAsync(chatRequest.Message, chatRequest.SystemPrompt);
+
+        return Ok(response);
+    }
+
     [HttpPost("change_model")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(object), 200)]

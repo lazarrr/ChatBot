@@ -35,6 +35,18 @@ public class FlaskChatClient : IFlaskChatClient
         return (await response.Content.ReadFromJsonAsync<ChatResponseDto>())!;
     }
 
+    public async Task<ChatResponseDto> SendToConversationAsync(string message, string systemPrompt)
+    {
+        var response = await _httpClient.PostAsJsonAsync(
+            "chat/conversation",
+            new ChatRequestDto { Message = message, SystemPrompt = systemPrompt }
+        );
+
+        response.EnsureSuccessStatusCode();
+
+        return (await response.Content.ReadFromJsonAsync<ChatResponseDto>())!;
+    }
+
     public async Task<string> UploadFile(string filePath)
     {
         var response = await _httpClient.PostAsJsonAsync(

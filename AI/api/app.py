@@ -4,6 +4,7 @@ import os
 from semantic_search import SemanticSearch
 
 app = Flask(__name__)
+semanticSearch = SemanticSearch()
 
 # Initialize the GPT-5-nano agent
 try:
@@ -66,7 +67,10 @@ def chat_conversation():
         return jsonify(error="Message is required"), 400
     
     try:
-        reply = agent.chat(message, system_prompt)
+        resultFromVDB = semanticSearch.run(message)
+        print(f"Result from VDB: {resultFromVDB}")
+        
+        reply = agent.chat(message + "\n" + resultFromVDB, system_prompt)
         return jsonify(reply=reply, history=agent.get_history())
     except Exception as e:
         return jsonify(error=str(e)), 500
@@ -93,10 +97,7 @@ def upload_file():
     try:
         # Simulate file upload logic here
         print(f"Uploading file from path: {file_path}")
-        ss = SemanticSearch()
-        ss.get_embeddings()
-
-
+        semanticSearch.run(file_path)
         return jsonify(status="File uploaded successfully")
     except Exception as e:
         return jsonify(error=str(e)), 500

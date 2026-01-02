@@ -4,6 +4,7 @@ namespace ChatGateway.Domain;
 public interface IFlaskChatClient
 {
     Task<ChatResponseDto> SendAsync(string message, string systemPrompt);
+    Task<ChatResponseDto> SendToConversationAsync(string message, string systemPrompt);
     Task<string> ChangeModel(string model);
     Task<string> UploadFile(string filePath);
 }
