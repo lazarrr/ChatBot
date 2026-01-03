@@ -67,12 +67,13 @@ def chat_conversation():
         return jsonify(error="Message is required"), 400
     
     try:
-        resultFromVDB = semanticSearch.run(message)
-        print(f"Result from VDB: {resultFromVDB}")
+        resultFromVDB = semanticSearch.search_store(message)
+        print(f"Result from VDB: {resultFromVDB[0].page_content}")
         
-        reply = agent.chat(message + "\n" + resultFromVDB, system_prompt)
+        reply = agent.chat(message + "\n" + resultFromVDB[0].page_content, system_prompt)
         return jsonify(reply=reply, history=agent.get_history())
     except Exception as e:
+        print(f"Error in /chat/conversation endpoint: {str(e)}")
         return jsonify(error=str(e)), 500
 
 @app.route("/chat/clear", methods=["POST"])
