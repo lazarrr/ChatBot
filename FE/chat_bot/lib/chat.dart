@@ -1,8 +1,10 @@
+import 'package:chat_bot/Models/uploadFileResponse.dart';
 import 'package:chat_bot/apiClient.dart';
 import 'package:chat_bot/main.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
+import 'dart:developer' as developer;
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -197,10 +199,13 @@ class _ChatScreenState extends State<ChatScreen> {
                       var response = await api.post('/api/FileUpload/upload',
                           body: {'filePath': filePath});
 
+                      final uploadResponse =
+                          UplaodFileResponse.fromJson(response);
+
                       setState(() {
                         _messages.add(Message(
                           text:
-                              'Uploaded file: $fname (${(fsize / 1024).toStringAsFixed(2)} KB)',
+                              "Uploaded file: $fname (${(fsize / 1024).toStringAsFixed(2)} KB) ${uploadResponse.status}",
                           isUser: true,
                           timestamp: DateTime.now(),
                         ));

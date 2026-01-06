@@ -1,4 +1,5 @@
 ﻿using ChatGateway.Contracts.Request;
+using ChatGateway.Contracts.Response;
 using ChatGateway.Domain;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,6 +35,6 @@ public class FileUploadController : Controller
 
         var responseStatus = await _flaskChatClient.UploadFile(request.FilePath);
        
-        return Ok(new { fileName = request.FilePath, status = responseStatus });
+        return Ok(new UploadFileResponseDto{ Status = responseStatus });
     }
 }

@@ -99,7 +99,7 @@ def upload_file():
         # Simulate file upload logic here
         print(f"Uploading file from path: {file_path}")
         semanticSearch.run(file_path)
-        return jsonify(status="File uploaded successfully")
+        return jsonify("File uploaded successfully")
     except Exception as e:
         return jsonify(error=str(e)), 500
 
