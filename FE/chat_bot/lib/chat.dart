@@ -34,17 +34,12 @@ class _ChatScreenState extends State<ChatScreen> {
 
     _messageController.clear();
 
-    // TODO: Call your backend API here
-    // Example: await fetchBotResponse(userMessage.text);
-
     final api = ApiClient();
 
     var response = await api.post('/api/Chat/chat', body: {
       'message': userMessage.text,
       'systemPrompt': 'You are a helpful assistant.'
     });
-
-    print(response);
 
     setState(() {
       _messages.add(Message(
