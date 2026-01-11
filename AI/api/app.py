@@ -1,14 +1,17 @@
 from flask import Flask, request, jsonify
-from agent import GPTAgent
+from model import GPTModel
 import os
 from semantic_search import SemanticSearch
+from agent import Agent
+from vectoreStore import VectoreStore
 
 app = Flask(__name__)
 semanticSearch = SemanticSearch()
+vectoreStore = VectoreStore()
 
 # Initialize the GPT-5-nano agent
 try:
-    agent = GPTAgent(api_key=os.getenv("OPENAI_API_KEY"), model="gpt-5-nano")
+    agent = Agent()
 except ValueError as e:
     print(f"Warning: {e}")
     agent = None
@@ -48,7 +51,7 @@ def chat():
         return jsonify(error="Message is required"), 400
     
     try:
-        reply = agent.chat_single(message, system_prompt)
+        reply = agent.chat(message=message)
         return jsonify(reply=reply)
     except Exception as e:
         print(f"Error in /chat endpoint: {str(e)}")
@@ -98,7 +101,7 @@ def upload_file():
     try:
         # Simulate file upload logic here
         print(f"Uploading file from path: {file_path}")
-        semanticSearch.run(file_path)
+        agent.add_file_to_store(file_path)
         return jsonify("File uploaded successfully")
     except Exception as e:
         return jsonify(error=str(e)), 500
