@@ -1,6 +1,7 @@
 import 'package:chat_bot/Models/uploadFileResponse.dart';
 import 'package:chat_bot/apiClient.dart';
 import 'package:chat_bot/main.dart';
+import 'package:chat_bot/messageBubble.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
@@ -58,7 +59,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 76, 77, 89),
+        backgroundColor: const Color.fromARGB(255, 84, 84, 91),
         elevation: 0,
         title: const Text(
           'ChatBot',
@@ -109,7 +110,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF343541),
+                      color: const Color.fromARGB(255, 91, 92, 106),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Center(
@@ -150,7 +151,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: const Color(0xFF565869),
+                      fillColor: const Color.fromARGB(255, 96, 98, 115),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 20,
                         vertical: 12,
