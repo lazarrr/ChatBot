@@ -23,3 +23,10 @@ Gateway application for an AI chatbot system.
 
 ## Status
 🚧 Work in progress
+
+
+## RabbitMq
+
+- docker run
+# latest RabbitMQ 4.x
+docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management

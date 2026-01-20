@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify
-from model import GPTModel
-import os
 from semantic_search import SemanticSearch
 from agent import Agent
 from vectoreStore import VectoreStore
+
+from rabbitmq.connection import create_connection
+from rabbitmq.consumer import RabbitMQConsumer
+from rabbitmq.producer import RabbitMQProducer
 
 app = Flask(__name__)
 semanticSearch = SemanticSearch()
@@ -15,6 +17,8 @@ try:
 except ValueError as e:
     print(f"Warning: {e}")
     agent = None
+
+
 
 @app.route("/health", methods=["GET"])
 def health():

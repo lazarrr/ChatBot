@@ -8,10 +8,14 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<FlaskSettings>(builder.Configuration.GetSection("FlaskSettings"));
 
-builder.Services.AddHttpClient<IFlaskChatClient, FlaskChatClient>(client =>
-{
-    client.BaseAddress = new Uri("http://127.0.0.1:8081/");
-});
+//builder.Services.AddHttpClient<IRabbitMqClient, RabbitMqClient>(client =>
+//{
+//    client.BaseAddress = new Uri("http://127.0.0.1:8081/");
+//});
+
+builder.Services.AddScoped<IRabbitMqClient, RabbitMqClient>();
+
+builder.Services.AddSignalR();
 
 builder.Services
     .AddControllers()
@@ -22,6 +26,8 @@ builder.Services
         );
     });
 
+// <-- Register your hosted service here
+builder.Services.AddHostedService<AiResponseListener>();
 
 var app = builder.Build();
 
@@ -32,10 +38,10 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty;
 });
 
+app.MapHub<ChatHub>("/chatHub");
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-

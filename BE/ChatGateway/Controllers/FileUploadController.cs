@@ -10,9 +10,9 @@ namespace ChatGateway.Controllers;
 public class FileUploadController : Controller
 {
     private readonly ILogger<FileUploadController> _logger;
-    private readonly IFlaskChatClient _flaskChatClient;
+    private readonly IRabbitMqClient _flaskChatClient;
 
-    public FileUploadController(ILogger<FileUploadController> logger, IFlaskChatClient flaskChatClient)
+    public FileUploadController(ILogger<FileUploadController> logger, IRabbitMqClient flaskChatClient)
     {
         _logger = logger;
         _flaskChatClient = flaskChatClient;
@@ -35,6 +35,6 @@ public class FileUploadController : Controller
 
         var responseStatus = await _flaskChatClient.UploadFile(request.FilePath);
        
-        return Ok(new UploadFileResponseDto{ Status = responseStatus });
+        return Ok(responseStatus);
     }
 }

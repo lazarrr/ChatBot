@@ -60,22 +60,14 @@ class Agent:
         )
 
     def summarize_file(self, filename: str) -> str:
-        # 1. Grab only the documents related to this file from our store
-        # We need an instance of VectoreStore or access to the one created
-        # Logic: Find docs where metadata['source_file'] == filename
         
         docs_to_summarize = self.vectoreStore.get_all_documents_by_filename(filename)
-        # for doc_id, doc in self.vectoreStore.docstore._dict.items():
-        #     if doc.metadata.get('source_file') == filename:
-        #         docs_to_summarize.append(doc)
 
         print(f"Found {len(docs_to_summarize)} documents for file '{filename}' to summarize.")
 
         if not docs_to_summarize:
             return f"I couldn't find any data for a file named '{filename}'. Please ensure it was uploaded correctly."
 
-        # 2. Use the 'map_reduce' chain for high-quality summarization of large text
-        # 'stuff' is faster for tiny files, but 'map_reduce' is robust for PDFs
         summarize_chain = load_summarize_chain(self.llm, chain_type="map_reduce")
         
         try:
