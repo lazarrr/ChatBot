@@ -7,6 +7,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as developer;
 
+import 'package:signalr_netcore/hub_connection_builder.dart';
+
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
@@ -42,10 +44,35 @@ class _ChatScreenState extends State<ChatScreen> {
       'systemPrompt': 'You are a helpful assistant.'
     });
 
-    setState(() {
-      _messages.add(Message(
-          text: response['reply'], isUser: false, timestamp: DateTime.now()));
-      _isLoading = false;
+    final signalRClient = HubConnectionBuilder()
+        .withUrl('http://localhost:8080/chathub?jobId=${response['jobId']}')
+        .withAutomaticReconnect()
+        .build();
+
+    await signalRClient.start();
+
+    signalRClient.on('AiResponse', (message) async {
+      final list = message as List<dynamic>;
+      final data = list.first as Map<String, dynamic>;
+
+      final status = data['status'] as String?;
+      final result = data['result'] as String?;
+
+      if (result != null) {
+        setState(() {
+          _messages.add(Message(
+            text: result,
+            isUser: false,
+            timestamp: DateTime.now(),
+          ));
+          _isLoading = false;
+        });
+      }
+
+      // ✅ Close connection when done
+      if (status == 'completed' || status == 'failed') {
+        await signalRClient.stop();
+      }
     });
   }
 
