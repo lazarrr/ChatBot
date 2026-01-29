@@ -5,7 +5,7 @@ Gateway application for an AI chatbot system.
 ## Architecture
 - Flutter (Frontend)
 - ASP.NET Core Web API (Gateway)
-- Flask (Microservice for OpenAI communication)
+- Python worker (Microservice for OpenAI communication)
 
 ## Solution Structure
 - ChatBot.Gateway.Api
@@ -18,12 +18,15 @@ Gateway application for an AI chatbot system.
 ## Tech Stack
 - .NET 8
 - Flutter
-- Python (Flask)
+- Python 
 - OpenAI API
 
-## Status
-🚧 Work in progress
-
+## How to run
+First step is to run docker command for rabbitmq (command below)
+After first step we need to run: (in separate terminal)
+- dotnet run (for BE)
+- flutter run (for FE)
+- python worker.py (for py worker)
 
 ## RabbitMq
 
