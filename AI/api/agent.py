@@ -26,6 +26,8 @@ class Agent:
             "which might reference context in the chat history, "
             "formulate a standalone question which can be understood "
             "without the chat history."
+            "If user asked for some personal information, and if that information is present in the vector store, then include that information in the standalone question. " \
+            "you must retrieve any relevant information from the vector store and include it in the standalone question. " 
         )
         contextualize_q_prompt = ChatPromptTemplate.from_messages([
             ("system", contextualize_q_system_prompt),
@@ -41,6 +43,8 @@ class Agent:
         system_prompt = (
             "You are an assistant for question-answering tasks. "
             "Use the following pieces of retrieved context to answer the question."
+            "If user asked for some personal information, and if that information is present in the vector store, then include that information in the standalone question. " \
+            "you must retrieve any relevant information from the vector store and include it in the standalone question. " 
             "\n\n"
             "{context}"
         )
