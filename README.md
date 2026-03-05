@@ -15,7 +15,7 @@ Communication between services is handled using **RabbitMQ**.
 ## Solution Structure
 
 ```
-
+![architecture overview](https://github.com/lazarrr/ChatBot/blob/main/Gemini_Generated_Image_bzfve7bzfve7bzfv.png)
 ```
 
 ## Tech Stack
