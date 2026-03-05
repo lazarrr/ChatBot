@@ -14,9 +14,9 @@ Communication between services is handled using **RabbitMQ**.
 
 ## Solution Structure
 
-```
+
 <img src="https://github.com/lazarrr/ChatBot/blob/main/architecture.png" width="600"/>
-```
+
 
 ## Tech Stack
 
