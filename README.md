@@ -173,15 +173,3 @@ Run the worker:
 ```bash
 python worker.py
 ```
-
----
-
-# Application Flow
-
-1. The **Flutter app** sends a request to the **ASP.NET Core Gateway API**.
-2. The Gateway publishes a message to **RabbitMQ**.
-3. The **Python Worker** consumes the message.
-4. The worker sends the request to the **OpenAI API**.
-5. The response is returned through the same pipeline back to the **Flutter application**.
-
----
