@@ -15,16 +15,7 @@ Communication between services is handled using **RabbitMQ**.
 ## Solution Structure
 
 ```
-ChatBot.Gateway.Api
-ChatBot.Gateway.Application
-ChatBot.Gateway.Domain
-ChatBot.Gateway.Infrastructure
-ChatBot.Gateway.Contracts
-ChatBot.Gateway.Shared
-AI/
- └── api/
-     ├── worker.py
-     └── requirements.txt
+
 ```
 
 ## Tech Stack
@@ -133,7 +124,7 @@ Navigate to the AI worker project:
 cd AI/api
 ```
 
-Install dependencies from `requirements.txt`:
+Install dependencies from `requirements.txt` (it is recommended to use some isolated environments e.g. venv or conda):
 
 ```bash
 pip install -r requirements.txt
