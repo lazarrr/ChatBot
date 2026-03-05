@@ -219,13 +219,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       }
                       // call endpoint to upload file
                       final api = ApiClient();
-                      var response = await api.post('/api/FileUpload/upload',
+                      var _ = await api.post('/api/FileUpload/upload',
                           body: {'filePath': filePath});
-                      print("----------");
-                      print(response);
-                      print("----------");
-                      final uploadResponse =
-                          UplaodFileResponse.fromJson(response);
 
                       setState(() {
                         _messages.add(Message(
