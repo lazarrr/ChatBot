@@ -31,7 +31,7 @@ Communication between services is handled using **RabbitMQ**.
 
 # Prerequisites
 
-Before running the project, make sure the following tools are installed:
+Before running the project, make sure the following tools are installed or aquared:
 
 ### 1. .NET
 
@@ -89,6 +89,29 @@ Verify installation:
 docker --version
 ```
 
+---
+
+### 5. OpenAI Key
+
+This project is working with OpenAI, so in order to run it you need to have OPENAI_API_KEY key set as variable in you pc
+
+> for mac os
+
+Open a Terminal and add the key to your shell config file (~/.zshrc or ~/.bashrc):
+```bash
+echo 'export OPENAI_API_KEY="your_api_key"' >> ~/.zshrc
+```
+Apply changes by restarting the terminal or running source ~/.zshrc.
+Verify with 
+
+```bash
+echo $OPENAI_API_KEY.
+```
+
+> for windows
+
+ - Via Control Panel (Permanent): Search for "Environment Variables," click "Edit the system environment variables," add a new user variable named OPENAI_API_KEY with your key as the value, and restart the command prompt.
+ - Via Command Prompt (Permanent): Use setx OPENAI_API_KEY "your_api_key" and restart the command prompt.
 ---
 
 # Setup
