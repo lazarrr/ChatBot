@@ -1,10 +1,10 @@
 // ignore: file_names
 class UplaodFileResponse {
-  final String status;
+  final String jobId;
 
-  UplaodFileResponse({required this.status});
+  UplaodFileResponse({required this.jobId});
 
   factory UplaodFileResponse.fromJson(Map<String, dynamic> json) {
-    return UplaodFileResponse(status: json['status']);
+    return UplaodFileResponse(jobId: json['jobId']);
   }
 }

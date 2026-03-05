@@ -221,14 +221,16 @@ class _ChatScreenState extends State<ChatScreen> {
                       final api = ApiClient();
                       var response = await api.post('/api/FileUpload/upload',
                           body: {'filePath': filePath});
-
+                      print("----------");
+                      print(response);
+                      print("----------");
                       final uploadResponse =
                           UplaodFileResponse.fromJson(response);
 
                       setState(() {
                         _messages.add(Message(
                           text:
-                              "Uploaded file: $fname (${(fsize / 1024).toStringAsFixed(2)} KB) ${uploadResponse.status}",
+                              "Uploaded file: $fname (${(fsize / 1024).toStringAsFixed(2)} KB)}",
                           isUser: true,
                           timestamp: DateTime.now(),
                         ));
