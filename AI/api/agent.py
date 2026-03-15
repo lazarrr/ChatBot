@@ -11,23 +11,27 @@ import re
 
 class Agent:
     def __init__(self):
-
         self.vectoreStore = VectoreStore()
+        
+        # FIXED: Use a valid OpenAI model
         self.llm = ChatOpenAI(
-            model="gpt-5-mini",
+            model="gpt-5-mini",  # or "gpt-3.5-turbo" or "gpt-4"
             api_key=os.getenv("OPENAI_API_KEY"),
             temperature=0
         )
-        self.retriever = self.vectoreStore.getVectoreStore().as_retriever(search_type="similarity", search_kwargs={"k": 5})
+        
+        self.retriever = self.vectoreStore.getVectoreStore().as_retriever(
+            search_type="similarity", 
+            search_kwargs={"k": 5}
+        )
 
-        # 1. Define a sub-chain that "re-phrases" the question based on history
+        # 1. Contextualize question sub-chain
         contextualize_q_system_prompt = (
             "Given a chat history and the latest user question "
             "which might reference context in the chat history, "
             "formulate a standalone question which can be understood "
-            "without the chat history."
-            "If user asked for some personal information, and if that information is present in the vector store, then include that information in the standalone question. " \
-            "you must retrieve any relevant information from the vector store and include it in the standalone question. " 
+            "without the chat history. Do NOT answer the question, "
+            "just reformulate it if needed and otherwise return it as is."
         )
         contextualize_q_prompt = ChatPromptTemplate.from_messages([
             ("system", contextualize_q_system_prompt),
@@ -35,16 +39,15 @@ class Agent:
             ("human", "{input}"),
         ])
         
-        history_aware_retriever = create_history_aware_retriever(
+        self.history_aware_retriever = create_history_aware_retriever(
             self.llm, self.retriever, contextualize_q_prompt
         )
 
-        # 2. Define the main QA chain
+        # 2. Main QA chain
         system_prompt = (
             "You are an assistant for question-answering tasks. "
-            "Use the following pieces of retrieved context to answer the question."
-            "If user asked for some personal information, and if that information is present in the vector store, then include that information in the standalone question. " \
-            "you must retrieve any relevant information from the vector store and include it in the standalone question. " 
+            "Use the following pieces of retrieved context to answer the question. "
+            "If you don't know the answer, just say that you don't know. "
             "\n\n"
             "{context}"
         )
@@ -55,7 +58,7 @@ class Agent:
         ])
 
         question_answer_chain = create_stuff_documents_chain(self.llm, qa_prompt)
-        self.rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
+        self.rag_chain = create_retrieval_chain(self.history_aware_retriever, question_answer_chain)
 
     def get_session_history(self, session_id: str):
         return SQLChatMessageHistory(
@@ -63,33 +66,43 @@ class Agent:
             connection="sqlite:///chat_history.db"
         )
 
-    def summarize_file(self, filename: str) -> str:
+    def add_file_to_store(self, file_path: str):
+        """Add a file to the vector store"""
+        self.vectoreStore.store_file(file_path)
+
+    def debug_retrieval(self, query: str):
+        """Debug method to check what's being retrieved"""
+        # Get documents directly from retriever
+        docs = self.retriever.invoke(query)
+        print(f"\n=== DEBUG: Retrieved {len(docs)} documents for query: '{query}' ===")
         
-        docs_to_summarize = self.vectoreStore.get_all_documents_by_filename(filename)
-
-        print(f"Found {len(docs_to_summarize)} documents for file '{filename}' to summarize.")
-
-        if not docs_to_summarize:
-            return f"I couldn't find any data for a file named '{filename}'. Please ensure it was uploaded correctly."
-
-        summarize_chain = load_summarize_chain(self.llm, chain_type="map_reduce")
+        if not docs:
+            print("⚠️ No documents retrieved!")
+            print("Check if:")
+            print("1. Vector store has documents (run vectoreStore.getVectoreStore()._collection.count())")
+            print("2. Document chunks were properly embedded")
+            print("3. The query is relevant to your documents")
+        else:
+            for i, doc in enumerate(docs):
+                print(f"\n--- Document {i+1} (score: {doc.metadata.get('score', 'N/A')}) ---")
+                print(f"Source: {doc.metadata.get('source', 'Unknown')}")
+                print(f"Preview: {doc.page_content[:200]}...")
         
-        try:
-            summary = summarize_chain.invoke(docs_to_summarize)
-            return summary["output_text"]
-        except Exception as e:
-            print(f"Error during summarization: {str(e)}")
-            return f"Error during summarization: {str(e)}"
+        return docs
 
     def chat(self, message: str) -> str:
-       
+        # Handle summarize command
         summary_match = re.search(r"summarize\s+(?:of\s+|the\s+)?([\w\.-]+)", message.lower())
-        print(f"Summary match: {summary_match}")
         if summary_match:
             filename = summary_match.group(1)
             return self.summarize_file(filename)
 
-        # Otherwise, proceed with normal RAG chat
+        # DEBUG: Check retrieval first (remove this in production)
+        retrieved_docs = self.debug_retrieval(message)
+        
+        if not retrieved_docs:
+            return "I couldn't find any relevant documents in my knowledge base. Please make sure you've added documents first."
+
         conversational_rag_chain = RunnableWithMessageHistory(
             self.rag_chain,
             self.get_session_history,
@@ -99,10 +112,8 @@ class Agent:
         )
 
         response = conversational_rag_chain.invoke(
-                                        {"input": message},
-                                        config={"configurable": {"session_id": "default_session"}}
-                                        )
+            {"input": message},
+            config={"configurable": {"session_id": "default_session"}}
+        )
+        
         return response["answer"]
-    
-    def add_file_to_store(self, file_path: str):
-        self.vectoreStore.store_file(file_path)

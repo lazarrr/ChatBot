@@ -27,7 +27,7 @@ class RabbitMQConsumer:
             if request.type == "Chat":
                 result = self.llm_agent.chat(message=request.prompt)
             elif request.type == "Upload":
-                result = self.llm_agent.upload_file(file_path=request.prompt)
+                result = self.llm_agent.add_file_to_store(file_path=request.prompt)
                 
             print(f"Processed request {request.jobId} successfully.")
             print(f"Result: {result}")
