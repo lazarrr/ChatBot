@@ -70,38 +70,12 @@ class Agent:
         """Add a file to the vector store"""
         self.vectoreStore.store_file(file_path)
 
-    def debug_retrieval(self, query: str):
-        """Debug method to check what's being retrieved"""
-        # Get documents directly from retriever
-        docs = self.retriever.invoke(query)
-        print(f"\n=== DEBUG: Retrieved {len(docs)} documents for query: '{query}' ===")
-        
-        if not docs:
-            print("⚠️ No documents retrieved!")
-            print("Check if:")
-            print("1. Vector store has documents (run vectoreStore.getVectoreStore()._collection.count())")
-            print("2. Document chunks were properly embedded")
-            print("3. The query is relevant to your documents")
-        else:
-            for i, doc in enumerate(docs):
-                print(f"\n--- Document {i+1} (score: {doc.metadata.get('score', 'N/A')}) ---")
-                print(f"Source: {doc.metadata.get('source', 'Unknown')}")
-                print(f"Preview: {doc.page_content[:200]}...")
-        
-        return docs
-
     def chat(self, message: str) -> str:
         # Handle summarize command
         summary_match = re.search(r"summarize\s+(?:of\s+|the\s+)?([\w\.-]+)", message.lower())
         if summary_match:
             filename = summary_match.group(1)
             return self.summarize_file(filename)
-
-        # DEBUG: Check retrieval first (remove this in production)
-        retrieved_docs = self.debug_retrieval(message)
-        
-        if not retrieved_docs:
-            return "I couldn't find any relevant documents in my knowledge base. Please make sure you've added documents first."
 
         conversational_rag_chain = RunnableWithMessageHistory(
             self.rag_chain,
